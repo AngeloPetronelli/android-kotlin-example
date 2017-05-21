@@ -1,4 +1,4 @@
-package com.petronelli.kotlin.`interface`
+package com.petronelli.kotlin.interfaces
 
 /**
  * @author Angelo Petronelli on 21/05/2017.

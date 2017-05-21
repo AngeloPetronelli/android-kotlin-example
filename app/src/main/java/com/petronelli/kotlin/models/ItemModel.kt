@@ -1,4 +1,4 @@
-package com.petronelli.kotlin.model
+package com.petronelli.kotlin.models
 
 /**
  * @author Angelo Petronelli on 21/05/2017.

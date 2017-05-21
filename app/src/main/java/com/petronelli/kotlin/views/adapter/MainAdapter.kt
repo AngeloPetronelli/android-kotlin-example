@@ -1,20 +1,21 @@
 package com.petronelli.kotlin.views.adapter
 
-import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
+import com.bumptech.glide.Glide
 import com.petronelli.kotlin.R
-import com.petronelli.kotlin.`interface`.GResponder
-import com.petronelli.kotlin.model.ItemModel
+import com.petronelli.kotlin.interfaces.GResponder
+import com.petronelli.kotlin.models.ItemModel
 
 /**
  * @author Angelo Petronelli on 21/05/2017.
  */
 
-class MainAdapter(private var mContext: Context, private var mItems: MutableList<ItemModel>) :
+class MainAdapter(private var mItems: MutableList<ItemModel>) :
         RecyclerView.Adapter<MainAdapter.MainViewHolder>() {
 
     private var responder: GResponder<ItemModel>? = null
@@ -34,32 +35,33 @@ class MainAdapter(private var mContext: Context, private var mItems: MutableList
 
     ////
 
-    override fun onBindViewHolder(p0: MainViewHolder?, p1: Int) {
-        p0?.bind(mItems[p1])
+    override fun onCreateViewHolder(viewGroup: ViewGroup, position: Int): MainViewHolder {
+        return MainViewHolder(LayoutInflater.from(viewGroup.context).inflate(R.layout.item_model, null, false), this)
+    }
+
+    override fun onBindViewHolder(mainViewHolder: MainViewHolder, position: Int) {
+        mainViewHolder.bind(mItems[position])
     }
 
     override fun getItemCount(): Int {
         return mItems.size
     }
 
-    override fun onCreateViewHolder(p0: ViewGroup?, p1: Int): MainViewHolder {
-        return MainViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_model, null), this)
-    }
-
     //// HOLDER
 
-    class MainViewHolder(view: View, private val parent : MainAdapter) :
+    class MainViewHolder(view: View, private val parent: MainAdapter) :
             RecyclerView.ViewHolder(view) {
 
         fun bind(model: ItemModel) {
 
-            val text: TextView = itemView.findViewById(R.id.name) as TextView
+            val text = itemView.findViewById(R.id.name) as TextView
             text.text = model.getName()
 
+            val image = itemView.findViewById(R.id.image) as ImageView
+            Glide.with(image.context).load(model.getUrl()).centerCrop().into(image)
+
             itemView.setOnClickListener({
-                if (parent.responder != null) {
-                    parent.responder!!.onResponse(model)
-                }
+                parent.responder?.onResponse(model)
             })
 
         }
