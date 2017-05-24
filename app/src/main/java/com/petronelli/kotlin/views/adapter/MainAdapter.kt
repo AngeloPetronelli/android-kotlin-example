@@ -29,6 +29,12 @@ class MainAdapter(private var mItems: MutableList<ItemModel>) :
         notifyDataSetChanged()
     }
 
+    fun addItems(model: ItemModel) {
+        this.mItems.add(model)
+
+        notifyDataSetChanged()
+    }
+
     fun setItemClickListner(responder: GResponder<ItemModel>) {
         this.responder = responder
     }
@@ -55,10 +61,10 @@ class MainAdapter(private var mItems: MutableList<ItemModel>) :
         fun bind(model: ItemModel) {
 
             val text = itemView.findViewById(R.id.name) as TextView
-            text.text = model.getName()
+            text.text = model.name
 
             val image = itemView.findViewById(R.id.image) as ImageView
-            Glide.with(image.context).load(model.getUrl()).centerCrop().into(image)
+            Glide.with(image.context).load(model.url).centerCrop().into(image)
 
             itemView.setOnClickListener({
                 parent.responder?.onResponse(model)

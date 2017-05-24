@@ -4,17 +4,4 @@ package com.petronelli.kotlin.models
  * @author Angelo Petronelli on 21/05/2017.
  */
 
-data class ItemModel(private var id: Int, private var name: String, private var url: String) {
-
-    fun getId(): Int {
-        return this.id
-    }
-
-    fun getName(): String {
-        return this.name
-    }
-
-    fun getUrl(): String {
-        return this.url
-    }
-}
+data class ItemModel(var id: Int, var name: String, var url: String)

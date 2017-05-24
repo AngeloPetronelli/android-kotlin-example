@@ -10,15 +10,18 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.petronelli.kotlin.R
 import com.petronelli.kotlin.interfaces.GResponder
-import com.petronelli.kotlin.views.adapter.MainAdapter
 import com.petronelli.kotlin.models.ItemModel
+import com.petronelli.kotlin.views.adapter.MainAdapter
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.toObservable
 import kotlinx.android.synthetic.main.fragment_main.*
 
 /**
  * @author Angelo Petronelli on 20/05/2017.
  */
-class MainFragment : Fragment(),
-        View.OnClickListener, GResponder<ItemModel> {
+class MainFragment : Fragment(), View.OnClickListener, GResponder<ItemModel> {
+
+    val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -30,7 +33,7 @@ class MainFragment : Fragment(),
 
         fab.setOnClickListener(this)
 
-        val adapter : MainAdapter = MainAdapter(ArrayList<ItemModel>())
+        val adapter: MainAdapter = MainAdapter(ArrayList<ItemModel>())
         adapter.setItemClickListner(this)
         recycler_view.layoutManager = LinearLayoutManager(context)
         recycler_view.adapter = adapter
@@ -47,7 +50,17 @@ class MainFragment : Fragment(),
         list.add(ItemModel(7, "C-18", "https://vignette2.wikia.nocookie.net/dragonball/images/8/8a/Cb18.png"))
         list.add(ItemModel(8, "Majin Buu", "https://vignette3.wikia.nocookie.net/dragonball/images/7/7d/Cbbuu.png"))
 
-        adapter.replaceItems(list)
+        compositeDisposable.add(
+                list.toObservable().subscribe({
+                    adapter.addItems(it)
+                }))
+
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        compositeDisposable.clear()
     }
 
     //// INTERFACES
@@ -57,6 +70,6 @@ class MainFragment : Fragment(),
     }
 
     override fun onResponse(t: ItemModel) {
-        Toast.makeText(context, t.getName(), Toast.LENGTH_LONG).show()
+        Toast.makeText(context, t.name, Toast.LENGTH_LONG).show()
     }
 }
